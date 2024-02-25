@@ -4,8 +4,8 @@
   "description": "",
   "source": "src/index.html",
   "scripts": {
-    "start": "parcel serve --dist-dir build",
-    "build": "parcel build --no-content-hash"
+    "start": "parcel serve",
+    "build": "parcel build --dist-dir docs --no-content-hash"
   },
   "author": "",
   "license": "ISC",
