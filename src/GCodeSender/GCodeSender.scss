@@ -1,0 +1,26 @@
+.gcode-sender {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 0.5rem;
+    align-items: start;
+    padding: 0.5rem;
+    height: 100%;
+
+    .__logs {
+        margin: -0.5rem;
+        margin-top: auto;
+        align-self: stretch;
+        display: flex;
+        flex-direction: column-reverse;
+        background: rgb(214, 214, 214);
+        min-height: 16rem;
+        padding: 0.5rem;
+        max-height: 50vh;
+        overflow: auto;
+    }
+
+    .__gcode {
+        width: 100%;
+        min-height: 10rem;
+    }
+}
