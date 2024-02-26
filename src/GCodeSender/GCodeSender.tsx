@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useGrblClient } from "../hooks/useGrblClient";
 import "./GCodeSender.scss";
 import { JogPad } from "./JogPad";
+import { GCodeViewer } from "./GCodeViewer";
 
 export function GCodeSender({ gcode }) {
 	const conn = useGrblClient();
@@ -64,7 +65,10 @@ export function GCodeSender({ gcode }) {
 				)}
 				<div className="__status">{status}</div>
 			</div>
-			<textarea className="__gcode" value={actualGCode} onChange={ev => setActualGCode(ev.target.value)} onKeyDown={handleKeyDown} placeholder="Enter gcode..."/>
+			<div className="__main">
+				<textarea className="__gcode" value={actualGCode} onChange={ev => setActualGCode(ev.target.value)} onKeyDown={handleKeyDown} placeholder="Enter gcode..."/>
+				<GCodeViewer gcode={actualGCode}/>
+			</div>
 			<div className="hstack gap-2">
 				<button className="btn btn-primary" onClick={handleSendClick} disabled={!connected}>Send</button>
 				<button className="btn btn-danger" onClick={handleStopClick} disabled={!connected}>Stop</button>

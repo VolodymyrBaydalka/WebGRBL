@@ -19,6 +19,13 @@
         overflow: auto;
     }
 
+    .__main {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem
+    }
+
     .__gcode {
         width: 100%;
         min-height: 10rem;

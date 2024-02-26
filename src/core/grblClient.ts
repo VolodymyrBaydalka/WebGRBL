@@ -1,3 +1,5 @@
+import { pureGCodeLines } from "./gcode";
+
 const serial = (navigator as any).serial;
 
 const newLine = "\n";
@@ -72,14 +74,7 @@ export class GrblClient {
     }
 
     async sendGcode(code: string) {
-        const lines = code.split(newLine);
-
-        for (let line of lines) {
-            const cmd = line.split(";")[0].trim();
-
-            if (cmd == "" && cmd.startsWith(";"))
-                continue;
-
+        for (let cmd of pureGCodeLines(code)) {
             this.#queue.push(cmd);
         }
 
