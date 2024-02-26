@@ -2,13 +2,13 @@ const serial = (navigator as any).serial;
 
 const newLine = "\n";
 
-export type GrblMessageType = "request" | "response" | "status";
-export type GrblMessage = {
-    type: GrblMessageType;
+export type GrblEventType = "request" | "response" | "status";
+export type GrblEvent = {
+    type: GrblEventType;
     text: string;
 }
 
-export class GrblConnection {
+export class GrblClient {
     #timer: any;
     #serial: any;
     #decoder = new TextDecoder();
@@ -19,7 +19,7 @@ export class GrblConnection {
     baudRate: number = 115200;
     statusInterval: number = 1000;
 
-    onMessage: (m: GrblMessage) => void;
+    onMessage: (m: GrblEvent) => void;
 
     get connected() {
         return !!this.#serial;
@@ -98,7 +98,7 @@ export class GrblConnection {
     }
 
     async #processMessage(line: string) {
-        let type: GrblMessageType = "response";
+        let type: GrblEventType = "response";
 
         if (line.startsWith("<")) {
             type = "status";

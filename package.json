@@ -5,7 +5,7 @@
   "source": "src/index.html",
   "scripts": {
     "start": "parcel serve",
-    "build": "parcel build --dist-dir docs --no-content-hash --public-url ./"
+    "build": "parcel build --dist-dir docs --no-content-hash --public-url ."
   },
   "author": "",
   "license": "ISC",
