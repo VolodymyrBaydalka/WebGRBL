@@ -5,7 +5,9 @@ const newLine = "\n";
 export type GrblEventType = "request" | "response" | "status";
 export type GrblEvent = {
     type: GrblEventType;
-    text: string;
+    message: string;
+    status?: string;
+    position?: [number, number, number];
 }
 
 export class GrblClient {
@@ -32,8 +34,6 @@ export class GrblClient {
     async connect() {
         this.#serial = await serial.requestPort({ filters: [] });
 
-        console.log(this.#serial);
-
         if (this.#serial) {
             await this.#serial.open({ baudRate: this.baudRate });
 
@@ -53,9 +53,22 @@ export class GrblClient {
         this.#queue = [];
     }
 
+    async reset() {
+        await this.#write("\x18");
+        this.stop();
+    }
+
     async sendLine(line: string) {
         this.#write(`${line} \r`);
-        this.onMessage?.({ type: "request", text: line });
+        this.onMessage?.({ type: "request", message: line });
+    }
+
+    async jog(dir: "X" | "Y", dist: number, feed: number) {
+        await this.sendGcode(`$J=G91 ${dir}${dist}F${feed}`);
+    }
+
+    async home() {
+        await this.sendGcode(`G0 X0Y0`);
     }
 
     async sendGcode(code: string) {
@@ -98,16 +111,23 @@ export class GrblClient {
     }
 
     async #processMessage(line: string) {
-        let type: GrblEventType = "response";
+        const event: GrblEvent = {
+            type: "response",
+            message: line
+        };
 
         if (line.startsWith("<")) {
-            type = "status";
-            line = line.substring(1, line.length - 2);
+            event.type = "status";
+            event.message = line.substring(1, line.length - 1);
+
+            const parts = event.message.split(/[,|:]/);
+            event.status = parts[0];
+            event.position = [parseFloat(parts[2]), parseFloat(parts[3]), parseFloat(parts[4])];
         } else {
             await this.sendNextLine();
         }
 
-        this.onMessage?.({ type, text: line });
+        this.onMessage?.(event);
     }
 
     async #write(line: string) {

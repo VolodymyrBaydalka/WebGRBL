@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { GrblClient } from "../core/grblClient";
+import { useGrblClient } from "../hooks/useGrblClient";
 import "./GCodeSender.scss";
+import { JogPad } from "./JogPad";
 
 export function GCodeSender({ gcode }) {
-	const [conn] = useState(() => new GrblClient())
+	const conn = useGrblClient();
 	const [connected, setConnected] = useState(false);
 	const [actualGCode, setActualGCode] = useState("");
 	const [status, setStatus] = useState("None");
 	const [logs, setLogs] = useState<any[]>([]);
 
 	useEffect(() => {
-		conn.onMessage = msg => {
-			if (msg.type == "status") {
-				setStatus(msg.text);
+		conn.onMessage = ev => {
+			if (ev.type == "status") {
+				setStatus(`${ev.status}, position=${ev.position?.join(", ")}`);
 			} else {
 				setLogs(prev => [...prev, { 
-					...msg, 
-					prefix: msg.type == "response" ? ">>" : "<<",
-					className: msg.text.startsWith("ok") ? "text-success" : (msg.text.startsWith("error:") ? "text-danger" : "")
+					text: `${ev.type == "request" ? "<<" : ">>"} ${ev.message}`,
+					className: ev.message.startsWith("ok") ? "text-success" : (ev.message.startsWith("error:") ? "text-danger" : "")
 				}]);
 			}
 		}
@@ -26,8 +26,6 @@ export function GCodeSender({ gcode }) {
 	useEffect(() => {
 		setActualGCode(gcode);
 	}, [gcode]);
-
-	
 
 	const handleConnectClick = async () => {
 		const res = await conn.connect();
@@ -72,9 +70,10 @@ export function GCodeSender({ gcode }) {
 				<button className="btn btn-danger" onClick={handleStopClick} disabled={!connected}>Stop</button>
 				<div>Queued: {conn.queueSize}</div>
 			</div>
+			<JogPad/>
 			<pre className="__logs">
 				<div className="__logs-content">
-					{logs.map((m, i) => (<div key={i} className={m.className}>{m.prefix} - {m.text}</div>))}
+					{logs.map((m, i) => (<div key={i} className={m.className}>{m.text}</div>))}
 				</div>
 			</pre>
 		</section>
