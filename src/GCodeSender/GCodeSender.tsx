@@ -3,6 +3,7 @@ import { useGrblClient } from "../hooks/useGrblClient";
 import "./GCodeSender.scss";
 import { JogPad } from "./JogPad";
 import { GCodeViewer } from "./GCodeViewer";
+import { image2GCode } from "../core/image2GCode";
 
 export function GCodeSender({ gcode }) {
 	const conn = useGrblClient();
@@ -62,16 +63,21 @@ export function GCodeSender({ gcode }) {
 	}
 
 	const handleFileSelected = async ev => {
-		if (ev.target.files.length == 0)
+		const [file] = ev.target.files as FileList;
+		
+		if (!file)
 			return;
 
-		setActualGCode(await ev.target.files[0].text());
+		if (/[.](png|jpg)$/.test(file.name))
+			setActualGCode(await image2GCode(file));
+		else
+			setActualGCode(await file.text());
 	}
 
 	return (<>
 		<section className="gcode-sender">
 			<div className="__toolbar">
-				<input type="file" className="form-control ml-1" style={{ width: '40ch' }} accept=".nc,.gcode" onChange={handleFileSelected}/>
+				<input type="file" className="form-control ml-1" style={{ width: '40ch' }} accept=".nc,.gcode,.png,.jpg" onChange={handleFileSelected}/>
 				{(connected
 					? <button type="button" className="btn btn-danger" onClick={handleDisconnectClick}>Disconnect</button>
 					: <button type="button" className="btn btn-success" onClick={handleConnectClick}>Connect</button>
