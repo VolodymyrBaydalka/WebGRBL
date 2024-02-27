@@ -65,7 +65,7 @@ export function GCodeSender({ gcode }) {
 
 	return (<>
 		<section className="gcode-sender">
-			<div className="__toolbar hstack p-1 gap-2">
+			<div className="__toolbar">
 				<input type="file" className="form-control ml-1" style={{ width: '40ch' }} accept=".nc,.gcode" onChange={handleFileSelected}/>
 				{(connected
 					? <button type="button" className="btn btn-danger" onClick={handleDisconnectClick}>Disconnect</button>
@@ -81,7 +81,7 @@ export function GCodeSender({ gcode }) {
 				<div>Queued: {status.queued ?? 0}</div>
 			</div>
 			<JogPad className="__jog-pad"/>
-			
+
 			<pre className="__logs">
 				<div className="__logs-content">
 					{logs.map((m, i) => (<div key={i} className={m.className}>{m.text}</div>))}
