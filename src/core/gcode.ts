@@ -1,8 +1,8 @@
 const newLine = "\n";
 
 export type Command = {
-    number: number;
-    type: string;
+    number?: number;
+    type?: string;
 } & Record<string, number>;
 
 export function trimGCodeComment(line: string) {
@@ -18,7 +18,7 @@ export function pureGCodeLines(gcode: string) {
 }
 
 export function parseGCodeLine(line: string) {
-    const result: Partial<Command> = {};
+    const result: Command = {};
 
     for (let [part] of line.matchAll(/[gmnxyzfjiksp][.\-0-9]+/gi)) {
         const lpart = part.toLowerCase();

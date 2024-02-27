@@ -21,7 +21,7 @@ export class GrblClient {
     #writer: WritableStreamDefaultWriter;
     #queue: string[] = [];
     baudRate: number = 115200;
-    statusInterval: number = 1000;
+    statusInterval: number = 200;
 
     onMessage: (m: GrblEvent) => void;
 

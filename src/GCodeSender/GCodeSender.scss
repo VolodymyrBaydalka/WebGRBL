@@ -1,12 +1,22 @@
 .gcode-sender {
-    display: flex;
-    flex-flow: column nowrap;
+    display: grid;
     gap: 0.5rem;
-    align-items: start;
     padding: 0.5rem;
     height: 100%;
 
+    grid-template-areas: 
+            "toolbar toolbar"
+            "gcode preview"
+            "controls preview"
+            "jogpad preview"
+            "logs logs";
+
+    .__toolbar {
+        grid-area: toolbar;
+    }
+
     .__logs {
+        grid-area: logs;
         margin: -0.5rem;
         margin-top: auto;
         align-self: stretch;
@@ -19,15 +29,29 @@
         overflow: auto;
     }
 
-    .__main {
-        width: 100%;
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.5rem
-    }
-
     .__gcode {
+        grid-area: gcode;
         width: 100%;
         min-height: 10rem;
+    }
+
+    .__jog-pad {
+        grid-area: jogpad;
+    }
+
+    .__gcode-preview {
+        grid-area: preview;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .gcode-sender {
+        grid-template-areas: 
+            "toolbar"
+            "gcode"
+            "preview"
+            "controls"
+            "jogpad"
+            "logs";
     }
 }

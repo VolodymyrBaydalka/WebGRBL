@@ -10,10 +10,15 @@
 
         line {
             vector-effect: non-scaling-stroke;
+            stroke: #ff0000;
+
+            &.gcode-g0 {
+                stroke: #81b590;
+            }
         }
 
         g.__viewport {
-            transform: translate(0px, 400px) scale(2, -2) translate(5px, 5px);
+            transform: translate(0px, 100%) scale(3, -3) translate(5px, 5px);
         }
     }
 }

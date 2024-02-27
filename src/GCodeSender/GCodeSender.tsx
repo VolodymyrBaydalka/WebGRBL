@@ -65,7 +65,7 @@ export function GCodeSender({ gcode }) {
 
 	return (<>
 		<section className="gcode-sender">
-			<div className="hstack p-1 gap-2">
+			<div className="__toolbar hstack p-1 gap-2">
 				<input type="file" className="form-control ml-1" style={{ width: '40ch' }} accept=".nc,.gcode" onChange={handleFileSelected}/>
 				{(connected
 					? <button type="button" className="btn btn-danger" onClick={handleDisconnectClick}>Disconnect</button>
@@ -73,16 +73,15 @@ export function GCodeSender({ gcode }) {
 				)}
 				<div className="__status">{status.status}{status.position && ` - ${status.position.join(", ")}`}</div>
 			</div>
-			<div className="__main">
-				<textarea className="__gcode" value={actualGCode} onChange={ev => setActualGCode(ev.target.value)} onKeyDown={handleKeyDown} placeholder="Enter gcode..."/>
-				<GCodeViewer gcode={actualGCode} position={status.position}/>
-			</div>
-			<div className="hstack gap-2">
+			<textarea className="__gcode" value={actualGCode} onChange={ev => setActualGCode(ev.target.value)} onKeyDown={handleKeyDown} placeholder="Enter gcode..."/>
+			<GCodeViewer className="__gcode-preview" gcode={actualGCode} position={status.position}/>
+			<div className="__controls hstack gap-2">
 				<button className="btn btn-primary" onClick={handleSendClick} disabled={!connected}>Send</button>
 				<button className="btn btn-danger" onClick={handleStopClick} disabled={!connected}>Stop</button>
 				<div>Queued: {status.queued ?? 0}</div>
 			</div>
-			<JogPad/>
+			<JogPad className="__jog-pad"/>
+			
 			<pre className="__logs">
 				<div className="__logs-content">
 					{logs.map((m, i) => (<div key={i} className={m.className}>{m.text}</div>))}

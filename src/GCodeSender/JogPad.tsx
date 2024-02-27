@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useGrblClient } from "../hooks/useGrblClient";
 import "./JogPad.scss";
 
-export function JogPad() {
+export function JogPad({ className }: any) {
     const [feed, setFeed] = useState(1800);
     const [step, setStep] = useState(60);
     const client = useGrblClient();
@@ -18,7 +18,7 @@ export function JogPad() {
     }
 
     return (
-        <div className="jog-pad">
+        <div className={`jog-pad ${className ?? ''}`}>
             <div></div>
             <button type="button" className="btn btn-warning" onClick={ev => jogClicked("Y", 1)}>
                 <i className="bi bi-arrow-up"></i>

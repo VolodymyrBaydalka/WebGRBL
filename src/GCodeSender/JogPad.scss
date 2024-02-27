@@ -2,6 +2,8 @@
     display: grid;    
     grid-template-columns: repeat(3, 1fr);
     gap: 0.25rem;
+    width: min-content;
+    height: min-content;
 
     &>button {
         width: 3rem;
