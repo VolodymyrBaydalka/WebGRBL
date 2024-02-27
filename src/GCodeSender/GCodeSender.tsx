@@ -8,13 +8,13 @@ export function GCodeSender({ gcode }) {
 	const conn = useGrblClient();
 	const [connected, setConnected] = useState(false);
 	const [actualGCode, setActualGCode] = useState("");
-	const [status, setStatus] = useState("None");
+	const [status, setStatus] = useState<any>({ status: "None" });
 	const [logs, setLogs] = useState<any[]>([]);
 
 	useEffect(() => {
 		conn.onMessage = ev => {
 			if (ev.type == "status") {
-				setStatus(`${ev.status}, position=${ev.position?.join(", ")}`);
+				setStatus({ status: ev.status, position: ev.position, queued: conn.queueSize });
 			} else {
 				setLogs(prev => [...prev, { 
 					text: `${ev.type == "request" ? "<<" : ">>"} ${ev.message}`,
@@ -31,19 +31,19 @@ export function GCodeSender({ gcode }) {
 	const handleConnectClick = async () => {
 		const res = await conn.connect();
 		setConnected(res);
-		setStatus("Connecting");
+		setStatus({ status: "Connecting" });
 	}
 
 	const handleDisconnectClick = async () => {
 		await conn.disconnect();
 		setConnected(false);
-		setStatus("Disconnected");
+		setStatus({ status: "Disconnected" });
 	}
 
 	const handleSendClick = async () => {
 		if (connected) {
 			await conn.sendGcode(actualGCode);
-			setActualGCode("");
+			//setActualGCode("");
 		}
 	}
 
@@ -56,23 +56,31 @@ export function GCodeSender({ gcode }) {
 		}
 	}
 
+	const handleFileSelected = async ev => {
+		if (ev.target.files.length == 0)
+			return;
+
+		setActualGCode(await ev.target.files[0].text());
+	}
+
 	return (<>
 		<section className="gcode-sender">
 			<div className="hstack p-1 gap-2">
+				<input type="file" className="form-control ml-1" style={{ width: '40ch' }} accept=".nc,.gcode" onChange={handleFileSelected}/>
 				{(connected
 					? <button type="button" className="btn btn-danger" onClick={handleDisconnectClick}>Disconnect</button>
 					: <button type="button" className="btn btn-success" onClick={handleConnectClick}>Connect</button>
 				)}
-				<div className="__status">{status}</div>
+				<div className="__status">{status.status}{status.position && ` - ${status.position.join(", ")}`}</div>
 			</div>
 			<div className="__main">
 				<textarea className="__gcode" value={actualGCode} onChange={ev => setActualGCode(ev.target.value)} onKeyDown={handleKeyDown} placeholder="Enter gcode..."/>
-				<GCodeViewer gcode={actualGCode}/>
+				<GCodeViewer gcode={actualGCode} position={status.position}/>
 			</div>
 			<div className="hstack gap-2">
 				<button className="btn btn-primary" onClick={handleSendClick} disabled={!connected}>Send</button>
 				<button className="btn btn-danger" onClick={handleStopClick} disabled={!connected}>Stop</button>
-				<div>Queued: {conn.queueSize}</div>
+				<div>Queued: {status.queued ?? 0}</div>
 			</div>
 			<JogPad/>
 			<pre className="__logs">
