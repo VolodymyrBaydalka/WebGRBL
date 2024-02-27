@@ -29,6 +29,11 @@ export function GCodeSender({ gcode }) {
 	}, [gcode]);
 
 	const handleConnectClick = async () => {
+		if(('serial' in navigator)) {
+			alert("Your browser doesn't support Web Serial API. Please try Chrome for desktop.")
+			return;
+		} 
+
 		const res = await conn.connect();
 		setConnected(res);
 		setStatus({ status: "Connecting" });
