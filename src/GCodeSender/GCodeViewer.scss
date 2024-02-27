@@ -10,12 +10,12 @@
             stroke: #ff0000;
 
             &.gcode-g0 {
-                stroke: #81b590;
+                stroke: #81b590AA;
             }
         }
 
         g.__viewport {
-            transform: translate(0px, 100%) scale(3, -3) translate(5px, 5px);
+            transform: translate(0px, 0%) scale(3, 3) translate(5px, 5px);
         }
     }
 }

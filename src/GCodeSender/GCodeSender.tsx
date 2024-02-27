@@ -4,6 +4,7 @@ import "./GCodeSender.scss";
 import { JogPad } from "./JogPad";
 import { GCodeViewer } from "./GCodeViewer";
 import { image2GCode } from "../core/image2GCode";
+import { svg2GCode } from "../core/svg2GCode";
 
 export function GCodeSender({ gcode }) {
 	const conn = useGrblClient();
@@ -70,6 +71,8 @@ export function GCodeSender({ gcode }) {
 
 		if (/[.](png|jpg)$/.test(file.name))
 			setActualGCode(await image2GCode(file));
+		else if (/[.](svg)$/.test(file.name))
+			setActualGCode(await svg2GCode(await file.text()));
 		else
 			setActualGCode(await file.text());
 	}
@@ -77,7 +80,7 @@ export function GCodeSender({ gcode }) {
 	return (<>
 		<section className="gcode-sender">
 			<div className="__toolbar">
-				<input type="file" className="form-control ml-1" style={{ width: '40ch' }} accept=".nc,.gcode,.png,.jpg" onChange={handleFileSelected}/>
+				<input type="file" className="form-control ml-1" style={{ width: '40ch' }} accept=".nc,.gcode,.png,.jpg,.svg" onChange={handleFileSelected}/>
 				{(connected
 					? <button type="button" className="btn btn-danger" onClick={handleDisconnectClick}>Disconnect</button>
 					: <button type="button" className="btn btn-success" onClick={handleConnectClick}>Connect</button>

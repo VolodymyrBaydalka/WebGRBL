@@ -1,7 +1,8 @@
 const newLine = "\r\n";
 
 export type Image2GCodeOptions = {
-    trimLines: boolean
+    trimLines: boolean,
+    sensitivity: number
 }
 
 export async function image2GCode(blob: Blob, ops?: Image2GCodeOptions): Promise<string> {
@@ -9,7 +10,7 @@ export async function image2GCode(blob: Blob, ops?: Image2GCodeOptions): Promise
     const canvas = new OffscreenCanvas(image.width, image.height);
     const ctx = canvas.getContext("2d") as OffscreenCanvasRenderingContext2D;
 
-    ops = { ...ops, trimLines: true };
+    ops = { ...ops, trimLines: true, sensitivity: 230 };
     
     ctx.drawImage(image, 0, 0);
     const data = ctx.getImageData(0, 0, image.width, image.height);
@@ -29,10 +30,8 @@ export async function image2GCode(blob: Blob, ops?: Image2GCodeOptions): Promise
             const g = data.data[index + 1];
             const b = data.data[index + 2];
             const a = data.data[index + 3];
-
             const l = (r + b + g) / 3;
-
-            const cmd = l > 230 ? "G0" : "G1";
+            const cmd = l > ops.sensitivity ? "G0" : "G1";
 
             if (currCmd != cmd) {
                 result += `${currCmd} X${currX.toFixed(2)} ${newLine}`;
