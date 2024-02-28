@@ -101,5 +101,7 @@ function parsePathData(data: string) {
         }
     }
 
+    result += `G1 X${startX} Y${startY} ${newLine}`
+
     return result;
 }

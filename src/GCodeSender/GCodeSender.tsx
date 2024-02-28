@@ -5,6 +5,8 @@ import { JogPad } from "./JogPad";
 import { GCodeViewer } from "./GCodeViewer";
 import { image2GCode } from "../core/image2GCode";
 import { svg2GCode } from "../core/svg2GCode";
+import { useDialogState } from "../hooks/useDialogState";
+import { Image2GCodeSettings } from "./Image2GCodeSettings";
 
 export function GCodeSender({ gcode }) {
 	const conn = useGrblClient();
@@ -12,6 +14,7 @@ export function GCodeSender({ gcode }) {
 	const [actualGCode, setActualGCode] = useState("");
 	const [status, setStatus] = useState<any>({ status: "None" });
 	const [logs, setLogs] = useState<any[]>([]);
+	const image2GCodeState = useDialogState();
 
 	useEffect(() => {
 		conn.onMessage = ev => {
@@ -69,8 +72,13 @@ export function GCodeSender({ gcode }) {
 		if (!file)
 			return;
 
-		if (/[.](png|jpg)$/.test(file.name))
-			setActualGCode(await image2GCode(file));
+		if (/[.](png|jpg)$/.test(file.name)) {
+			const settings = await image2GCodeState.showAsync();
+
+			if (settings) {
+				setActualGCode(await image2GCode(file, settings));
+			}
+		}
 		else if (/[.](svg)$/.test(file.name))
 			setActualGCode(await svg2GCode(await file.text()));
 		else
@@ -102,5 +110,6 @@ export function GCodeSender({ gcode }) {
 				</div>
 			</pre>
 		</section>
+		{image2GCodeState.data && <Image2GCodeSettings onClose={image2GCodeState.onClose}/>}
 	</>);
 }
