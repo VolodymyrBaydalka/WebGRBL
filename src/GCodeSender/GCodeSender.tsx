@@ -7,9 +7,11 @@ import { image2GCode } from "../core/image2GCode";
 import { svg2GCode } from "../core/svg2GCode";
 import { useDialogState } from "../hooks/useDialogState";
 import { Image2GCodeSettings } from "./Image2GCodeSettings";
+import { GCodeViewer3D } from "./GCodeViewer3D";
 
 export function GCodeSender({ gcode }) {
 	const conn = useGrblClient();
+	const [view3D, setView3D] = useState(false);
 	const [connected, setConnected] = useState(false);
 	const [actualGCode, setActualGCode] = useState("");
 	const [status, setStatus] = useState<any>({ status: "None" });
@@ -94,9 +96,11 @@ export function GCodeSender({ gcode }) {
 					: <button type="button" className="btn btn-success" onClick={handleConnectClick}>Connect</button>
 				)}
 				<div className="__status">{status.status}{status.position && ` - ${status.position.join(", ")}`}</div>
+				<label className="ms-auto me-2"><input type="checkbox" checked={view3D} onChange={ev => setView3D(ev.target.checked)}/> 3D</label>
 			</div>
 			<textarea className="__gcode" value={actualGCode} onChange={ev => setActualGCode(ev.target.value)} onKeyDown={handleKeyDown} placeholder="Enter gcode..."/>
-			<GCodeViewer className="__gcode-preview" gcode={actualGCode} position={status.position}/>
+			{view3D ?<GCodeViewer3D className="__gcode-preview" gcode={actualGCode} position={status.position}/>
+				:<GCodeViewer className="__gcode-preview" gcode={actualGCode} position={status.position}/> }
 			<div className="__controls hstack gap-2">
 				<button className="btn btn-primary" onClick={handleSendClick} disabled={!connected}>Send</button>
 				<button className="btn btn-danger" onClick={handleStopClick} disabled={!connected}>Stop</button>

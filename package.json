@@ -10,14 +10,15 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@parcel/transformer-sass": "^2.11.0",
     "@types/react": "^18.2.58",
     "@types/react-dom": "^18.2.19",
-    "@parcel/transformer-sass": "^2.11.0",
     "parcel": "^2.11.0",
     "process": "^0.11.10"
   },
   "dependencies": {
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "three": "^0.162.0"
   }
 }
