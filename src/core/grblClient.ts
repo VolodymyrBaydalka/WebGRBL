@@ -1,6 +1,7 @@
 import { pureGCodeLines } from "./gcode";
+import { serial as polyfill } from 'web-serial-polyfill';
 
-const serial = (navigator as any).serial;
+const serial = (navigator as any).serial ?? polyfill;
 
 const newLine = "\n";
 
