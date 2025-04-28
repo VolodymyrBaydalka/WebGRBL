@@ -34,6 +34,10 @@ export class GrblClient {
         return this.#queue.length;
     }
 
+    get supported() {
+        return !!serial;
+    }
+
     async connect() {
         this.#serial = await serial.requestPort({ filters: [] });
 
