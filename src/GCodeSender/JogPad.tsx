@@ -1,15 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import { useGrblClient } from "../hooks/useGrblClient";
 import "./JogPad.scss";
+import { useSettings } from "../hooks/useSettings";
 
 export function JogPad({ className }: any) {
-    const [feed, setFeed] = useState(1800);
-    const [step, setStep] = useState(60);
+    const { jogStep, jogFeed  } = useSettings();
     const client = useGrblClient();
 
     const jogClicked = async (axis, dir) => {
         if (client.connected)
-            await client.jog(axis, dir * step, feed);
+            await client.jog(axis, dir * jogStep, jogFeed);
     }
 
     const homeClicked = async () => {

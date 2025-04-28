@@ -1,13 +1,10 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { getFormValue } from "../utils/form";
+import { Dialog } from "../components/Dialog";
 
 export function Image2GCodeSettings({ onClose }) {
-    const hostRef = useRef<any>(null);
-
-    useEffect(() => hostRef.current.showModal(), [])
-
     return (
-        <dialog ref={hostRef}>
+        <Dialog>
             <h4>Settings</h4>
             <form className="vstack gap-2" onSubmit={ev => onClose(getFormValue(ev.target as any))}>
                 <div>
@@ -23,6 +20,6 @@ export function Image2GCodeSettings({ onClose }) {
                     <button className="btn btn-secondary" type="button" onClick={ev => onClose(null)}>Cancel</button>
                 </div>
             </form>
-        </dialog>
+        </Dialog>
     )
 }
