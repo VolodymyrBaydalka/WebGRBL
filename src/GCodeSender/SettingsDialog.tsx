@@ -18,6 +18,10 @@ export function SettingsDialog({ onClose }) {
                     <label className="form-label">Jog Feed</label>
                     <input className="form-control" name="jogFeed" type="number" defaultValue={settings.jogFeed} />
                 </div>
+                <div>
+                    <label className="form-label">Feed Rate</label>
+                    <input className="form-control" name="feedRate" type="number" defaultValue={settings.feedRate} />
+                </div>
                 <div className="hstack justify-content-end gap-2">
                     <button className="btn btn-primary ml-auto" type="submit">Ok</button>
                     <button className="btn btn-secondary" type="button" onClick={ev => onClose(null)}>Cancel</button>
